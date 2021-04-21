@@ -4,11 +4,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.aldredo.core.base.holder.BaseHolder
 
 abstract class BaseRecyclerAdapter<T> : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    protected var currentList: List<T> = emptyList()
+    var currentList: MutableList<T> = arrayListOf()
 
-    var defaultCount: Int = 1
 
-    open fun submitList(listData: List<T>) {
+    var defaultCount: Int = 0
+
+    open fun submitList(listData: MutableList<T>) {
         currentList = listData
     }
 

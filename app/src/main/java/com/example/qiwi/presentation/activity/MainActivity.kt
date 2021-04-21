@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
         val recycler = findViewById<RecyclerView>(R.id.recycler_view)
         recycler.layoutManager = LinearLayoutManager(recycler.context)
         recycler.adapter = adapterForm
-
+        recycler.recycledViewPool.setMaxRecycledViews(1, 0)
         qiwiViewModel.getVisibleView().observe(this, {
             adapterForm.submitList(it)
         })
@@ -46,7 +46,6 @@ class MainActivity : AppCompatActivity() {
             qiwiViewModel.validation()
         }
         qiwiViewModel.init()
-        recycler.recycledViewPool.clear()
     }
 
     private fun hideBroad() {

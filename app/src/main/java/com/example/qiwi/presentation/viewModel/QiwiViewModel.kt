@@ -23,6 +23,11 @@ class QiwiViewModel constructor(private val qiwiUseCase: QiwiUseCase) : ViewMode
     fun getErrorMessages(): LiveData<String> = showErrorMessages
 
     fun init() {
+        if (showView.value.isNullOrEmpty())
+            getForm()
+    }
+
+    private fun getForm() {
         scope.launch {
             when (val response = getFormAsync()) {
                 is StateFormResponse.Result -> {
@@ -58,20 +63,15 @@ class QiwiViewModel constructor(private val qiwiUseCase: QiwiUseCase) : ViewMode
 
     private fun addDependencyView(value: String, viewDto: ViewDto) = scope.launch {
         hideKeyBoard.postValue(true)
-        pause(1)
         errorValidation.remove(viewDto)
         hiddenView.value?.forEach {
             if (it.key.toRegex().matches(value)) {
-                val arrayList = ArrayList<ViewDto>()
-                arrayList.addAll(visibleView.value!!)
-                arrayList.addAll(it.value)
-                showView.postValue(arrayList)
+                val viewList = ArrayList<ViewDto>()
+                viewList.addAll(visibleView.value!!)
+                viewList.addAll(it.value)
+                showView.postValue(viewList)
             }
         }
-    }
-
-    private suspend fun pause(time: Long) = withContext(Dispatchers.IO) {
-        delay(time * 100)
     }
 
     fun validation() {
