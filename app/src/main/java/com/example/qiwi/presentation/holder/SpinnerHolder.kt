@@ -1,6 +1,8 @@
 package com.example.qiwi.presentation.holder
 
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.*
 import com.aldredo.core.base.holder.BaseHolder
 import com.example.qiwi.R
@@ -45,6 +47,14 @@ class SpinnerHolder(
         this.viewDto = data
         title.text = data.title
         spinner.adapter = adapter
+    }
+
+    companion object {
+        fun createSpinnerHolder(parent: ViewGroup, navigation: QiwiViewModel): BaseHolder<ViewDto> {
+            val inflateView =
+                LayoutInflater.from(parent.context).inflate(R.layout.item_spiner, parent, false)
+            return SpinnerHolder(inflateView, navigation)
+        }
     }
 }
 
