@@ -15,7 +15,7 @@ import com.example.qiwi.presentation.adapter.FormAdapter
 import com.example.qiwi.presentation.viewModel.QiwiViewModel
 import javax.inject.Inject
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(R.layout.activity_main) {
     @Inject
     lateinit var qiwiViewModel: QiwiViewModel
 
@@ -24,14 +24,13 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
         ActivityComponent.create(this).inject(this)
         qiwiViewModel =
             ViewModelProvider(this, ModelFactory(qiwiViewModel)).get(qiwiViewModel::class.java)
-        val recycler = findViewById<RecyclerView>(R.id.recycler_view)
-        recycler.layoutManager = LinearLayoutManager(recycler.context)
-        recycler.adapter = adapterForm
-        recycler.recycledViewPool.setMaxRecycledViews(1, 0)
+        findViewById<RecyclerView>(R.id.recycler_view).apply {
+            layoutManager = LinearLayoutManager(context)
+            adapter = adapterForm
+        }
         qiwiViewModel.getVisibleView().observe(this, {
             adapterForm.submitList(it)
         })

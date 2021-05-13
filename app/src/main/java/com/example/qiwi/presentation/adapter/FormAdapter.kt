@@ -17,32 +17,27 @@ import javax.inject.Inject
 @ActivityScope
 class FormAdapter @Inject constructor(private val navigation: QiwiViewModel) :
     BaseListAdapter<ViewDto>(DIFF_CALLBACK) {
-    private val mapHolder = HashMap<Int, (ViewGroup) -> BaseHolder>()
+    private val mapHolder = HashMap<Int, (ViewGroup) -> BaseHolder<ViewDto>>()
 
     init {
         mapHolder[0] = ::createSpinnerHolder
         mapHolder[1] = ::createTextHolder
     }
 
-    private fun createTextHolder(parent: ViewGroup): BaseHolder {
+    private fun createTextHolder(parent: ViewGroup): BaseHolder<ViewDto> {
         val inflateView =
             LayoutInflater.from(parent.context).inflate(R.layout.item_edit, parent, false)
-        return TextHolder(inflateView, currentList, navigation)
+        return TextHolder(inflateView, navigation)
     }
 
-    private fun createSpinnerHolder(parent: ViewGroup): BaseHolder {
+    private fun createSpinnerHolder(parent: ViewGroup): BaseHolder<ViewDto> {
         val inflateView =
             LayoutInflater.from(parent.context).inflate(R.layout.item_spiner, parent, false)
-        return SpinnerHolder(inflateView, currentList, navigation)
+        return SpinnerHolder(inflateView, navigation)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return mapHolder[viewType].let {
-            if (it != null) {
-                it(parent)
-            } else
-                createTextHolder(parent)
-        }
+        return mapHolder[viewType]?.invoke(parent) ?: createTextHolder(parent)
     }
 
     override fun getItemViewType(position: Int) = currentList[position].getViewType

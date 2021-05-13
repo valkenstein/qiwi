@@ -9,13 +9,22 @@ import com.example.qiwi.presentation.viewModel.QiwiViewModel
 
 class SpinnerHolder(
     private val view: View,
-    private val currentList: MutableList<ViewDto>,
     private val viewModel: QiwiViewModel
-) : BaseHolder(view) {
+) : BaseHolder<ViewDto>(view) {
+    private val adapter: ArrayAdapter<String> by lazy {
+        ArrayAdapter(
+            view.context,
+            android.R.layout.simple_spinner_item,
+            viewDto.widget.toArrayTitle()
+        ).apply {
+            setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        }
+    }
+
+    private lateinit var viewDto: ViewDto
     private val title = view.findViewById<TextView>(R.id.title)
-    private val spinner = view.findViewById<Spinner>(R.id.spinner)
-    init {
-        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+    private val spinner = view.findViewById<Spinner>(R.id.spinner).apply {
+        onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>,
                 view: View,
@@ -23,22 +32,18 @@ class SpinnerHolder(
                 id: Long
             ) {
                 viewModel.selectItem(
-                    currentList[bindingAdapterPosition].widget.choices[position].value,
-                    currentList[bindingAdapterPosition]
+                    viewDto.widget.choices[position].value,
+                    viewDto
                 )
             }
-            override fun onNothingSelected(parent: AdapterView<*>) { }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {}
         }
     }
 
-    override fun bind() {
-        title.text = currentList[bindingAdapterPosition].title
-        val adapter = ArrayAdapter(
-            view.context,
-            android.R.layout.simple_spinner_item,
-            currentList[bindingAdapterPosition].widget.toArrayTitle()
-        )
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+    override fun bind(data: ViewDto) {
+        this.viewDto = data
+        title.text = data.title
         spinner.adapter = adapter
     }
 }

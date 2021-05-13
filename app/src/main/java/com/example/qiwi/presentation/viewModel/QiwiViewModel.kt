@@ -46,17 +46,18 @@ class QiwiViewModel constructor(private val qiwiUseCase: QiwiUseCase) : ViewMode
         qiwiUseCase.getForm()
     }
 
-    fun selectItem(value: String, viewDto: ViewDto) {
-        val regex = viewDto.validator.pattern.toRegex()
-        when {
-            !regex.matches(value) -> {
-                if (value.isEmpty())
-                    errorValidation.remove(viewDto)
-                else
-                    errorValidation[viewDto] = viewDto.validator.message
-            }
-            else -> {
-                addDependencyView(value, viewDto)
+    fun selectItem(value: String, viewDto: ViewDto?) {
+        viewDto?.validator?.pattern?.toRegex()?.let {
+            when {
+                !it.matches(value) -> {
+                    if (value.isEmpty())
+                        errorValidation.remove(viewDto)
+                    else
+                        errorValidation[viewDto] = viewDto.validator.message
+                }
+                else -> {
+                    addDependencyView(value, viewDto)
+                }
             }
         }
     }

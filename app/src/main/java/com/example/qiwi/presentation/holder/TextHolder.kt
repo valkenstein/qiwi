@@ -10,23 +10,23 @@ import com.example.qiwi.presentation.viewModel.QiwiViewModel
 
 class TextHolder(
     view: View,
-    private val currentList: MutableList<ViewDto>,
     private val viewModel: QiwiViewModel
-) : BaseHolder(view) {
+) : BaseHolder<ViewDto>(view) {
     private val title = view.findViewById<TextView>(R.id.title)
     private val input = view.findViewById<TextView>(R.id.input)
+    private var viewDto: ViewDto? = null
 
     init {
         input.addTextChangedListener {
             viewModel.selectItem(
                 it.toString(),
-                currentList[bindingAdapterPosition]
+                viewDto
             )
         }
-
     }
 
-    override fun bind() {
-        title.text = currentList[bindingAdapterPosition].title
+    override fun bind(data: ViewDto) {
+        this.viewDto = data
+        title.text = data.title
     }
 }
